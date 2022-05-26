@@ -1,0 +1,12 @@
+function loadAnimations() {
+	character.animation.addByPrefix('idle', "Pico Idle Dance", 24, false);
+	character.animation.addByPrefix('singUP', 'pico Up note0', 24, false);
+	character.animation.addByPrefix('singDOWN', 'Pico Down Note0', 24, false);
+	character.animation.addByPrefix('singLEFT', 'Pico Note Right0', 24, false);
+	character.animation.addByPrefix('singRIGHT', 'Pico NOTE LEFT0', 24, false);
+	
+	character.playAnim('idle');
+	character.flipX = true;
+	//
+	character.cameraOffset.y = 60;
+}

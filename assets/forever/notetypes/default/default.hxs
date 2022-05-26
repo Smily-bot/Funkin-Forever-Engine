@@ -1,0 +1,27 @@
+function generateReceptor() {
+	receptor.frames = getAsset('NOTE_assets', 'sparrow');
+	var stringSect:String = getNoteDirection();
+	receptor.animation.addByPrefix('static', 'arrow' + stringSect.toUpperCase());
+	receptor.animation.addByPrefix('pressed', stringSect + ' press', 24, false);
+	receptor.animation.addByPrefix('confirm', stringSect + ' confirm', 24, false);
+	receptor.animation.play('static');
+}
+
+function generateNote() {
+	note.frames = getAsset('NOTE_assets', 'sparrow');
+	note.animation.addByPrefix('greenScroll', 'green0');
+	note.animation.addByPrefix('redScroll', 'red0');
+	note.animation.addByPrefix('blueScroll', 'blue0');
+	note.animation.addByPrefix('purpleScroll', 'purple0');
+	note.animation.addByPrefix('purpleholdend', 'pruple end hold');
+	note.animation.addByPrefix('greenholdend', 'green hold end');
+	note.animation.addByPrefix('redholdend', 'red hold end');
+	note.animation.addByPrefix('blueholdend', 'blue hold end');
+	note.animation.addByPrefix('purplehold', 'purple hold piece');
+	note.animation.addByPrefix('greenhold', 'green hold piece');
+	note.animation.addByPrefix('redhold', 'red hold piece');
+	note.animation.addByPrefix('bluehold', 'blue hold piece');
+
+	var stringSect:String = getNoteColor();
+	note.animation.play(stringSect+'Scroll');
+}

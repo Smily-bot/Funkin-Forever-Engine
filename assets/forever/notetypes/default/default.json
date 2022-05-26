@@ -1,0 +1,15 @@
+{
+	"keyAmount": 4,
+	"actions": [
+		"left",
+		"down",
+		"up",
+		"right"
+	],
+	"colors": [
+		"purple",
+		"blue",
+		"green",
+		"red"
+	]
+}
