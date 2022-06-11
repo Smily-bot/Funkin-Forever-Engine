@@ -89,16 +89,23 @@ class ChartParser
 					// push individual notes lmfao
 					for (j in legacySong.notes[i].sectionNotes)
 					{
-						var newNote:UnspawnedNote = {
-							beatTime: (j[0] / Conductor.stepCrochet),
-							// this formula sucks lmfao the base game format is ew
-							strumline: ((legacySong.notes[i].mustHitSection && j[1] <= 3 || !legacySong.notes[i].mustHitSection && j[1] > 3) ? 1 : 0),
-							index: Std.int(j[1] % 4),
-							type: 'default',
-							holdBeat: j[2],
-							animationString: '',
+						if (j[1] >= 0)
+						{
+							var newNote:UnspawnedNote = {
+								beatTime: (j[0] / Conductor.stepCrochet),
+								// this formula sucks lmfao the base game format is ew
+								strumline: ((legacySong.notes[i].mustHitSection && j[1] <= 3 || !legacySong.notes[i].mustHitSection && j[1] > 3) ? 1 : 0),
+								index: Std.int(j[1] % 4),
+								type: 'default',
+								holdBeat: j[2],
+								animationString: '',
+							}
+							returnSong.notes.push(newNote);
 						}
-						returnSong.notes.push(newNote);
+						else
+						{
+							//
+						}
 					}
 				}
 

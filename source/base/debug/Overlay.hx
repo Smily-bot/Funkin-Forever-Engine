@@ -33,19 +33,35 @@ class Overlay extends TextField
 		addEventListener(Event.ENTER_FRAME, update);
 	}
 
+	static final intervalArray:Array<String> = ['KB', 'MB', 'GB', 'TB'];
+
+	var memInterval:Int = 0;
+	var memPeakInterval:Int = 0;
+
 	function update(_:Event)
 	{
 		var now:Float = Timer.stamp();
 		times.push(now);
-
 		while (times[0] < now - 1)
 			times.shift();
 
-		var mem:Float = Math.round(System.totalMemory / 1024 / 1024 * 100) / 100;
+		var mem:Float = System.totalMemory / 1024 / 1024 * 1000;
+		// /*
+		for (i in 0...intervalArray.length)
+		{
+			if (mem > Math.pow(1000, i))
+				memInterval = i;
+		}
+		//  */
+		mem /= Math.pow(1000, memInterval);
+		mem = Math.round(mem * 100) / 100;
 		if (mem > memPeak)
+		{
 			memPeak = mem;
+			memPeakInterval = memInterval;
+		}
 
 		if (visible)
-			text = times.length + " FPS\n" + mem + " MB / " + memPeak + " MB\n";
+			text = times.length + " FPS\n" + mem + ' ${intervalArray[memInterval]} / ' + memPeak + ' ${intervalArray[memPeakInterval]}\n';
 	}
 }

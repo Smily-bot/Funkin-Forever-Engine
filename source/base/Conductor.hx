@@ -9,6 +9,11 @@ import states.MusicBeatState.MusicHandler;
 /**
  * A singleton class that handles the usage and control of songs
  */
+typedef Judgement =
+{
+	var timing:Float;
+}
+
 class Conductor
 {
 	public static var songPosition:Float = 0; // determines the position of the song in milliseconds
@@ -25,6 +30,9 @@ class Conductor
 	public static var boundState:MusicHandler;
 
 	public static final comparisonThreshold:Float = 20; // the amount of milliseconds of difference before resynchronization
+
+	public static var judgementMap:Map<String, Judgement> = ['sick' => {timing: 45}];
+	public static var msThreshold:Float = 120;
 
 	public static var bpmMap:Map<Float, Float>;
 	public static var soundGroup:FlxTypedGroup<FlxSound>;

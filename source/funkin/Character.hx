@@ -1,6 +1,7 @@
 package funkin;
 
 import AssetManager.EngineImplementation;
+import base.Conductor;
 import base.ForeverDependencies.OffsettedSprite;
 import base.ScriptHandler;
 import flixel.FlxSprite;
@@ -10,10 +11,14 @@ import haxe.Json;
 import haxe.ds.StringMap;
 import sys.io.File;
 
+using StringTools;
+
 class Character extends OffsettedSprite
 {
 	public var cameraOffset:FlxPoint;
 	public var characterOffset:FlxPoint;
+	public var holdTimer:Float = 0;
+	public var isPlayer:Bool = false;
 
 	public function new(x:Float, y:Float, ?engineImplementation:EngineImplementation, ?character:String = 'bf', ?characterAtlas:String = 'BOYFRIEND',
 			isPlayer:Bool = false)
@@ -29,6 +34,7 @@ class Character extends OffsettedSprite
 	{
 		frames = AssetManager.getAsset('$characterAtlas', SPARROW, 'characters/$character');
 		antialiasing = true;
+		this.isPlayer = isPlayer;
 
 		cameraOffset = new FlxPoint(0, 0);
 		characterOffset = new FlxPoint(0, 0);
@@ -85,8 +91,31 @@ class Character extends OffsettedSprite
 		return this;
 	}
 
-	public function dance()
+	override public function update(elapsed:Float)
 	{
-		playAnim('idle');
+		if (!isPlayer)
+		{
+			if (animation.curAnim.name.startsWith('sing'))
+				holdTimer += elapsed;
+			if (holdTimer >= (Conductor.stepCrochet * 4) / 1000)
+			{
+				dance();
+				holdTimer = 0;
+			}
+		}
+		else
+		{
+			if (animation.curAnim.name.startsWith('sing'))
+				holdTimer += elapsed;
+			else
+				holdTimer = 0;
+		}
+
+		super.update(elapsed);
+	}
+
+	public function dance(?forced:Bool = false)
+	{
+		playAnim('idle', forced);
 	}
 }

@@ -15,15 +15,14 @@ class OffsettedSprite extends FlxSprite
 	public function addOffset(name:String, x:Float = 0, y:Float = 0):Void
 		animOffsets[name] = [x, y];
 
-	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
+	public function playAnim(AnimName:String, ?Force:Bool = false, ?Reversed:Bool = false, ?Frame:Int = 0):Void
 	{
 		animation.play(AnimName, Force, Reversed, Frame);
+		centerOffsets();
+		centerOrigin();
+
 		var daOffset = animOffsets.get(AnimName);
 		if (animOffsets.exists(AnimName))
-		{
 			offset.set(daOffset[0], daOffset[1]);
-		}
-		else
-			offset.set(0, 0);
 	}
 }

@@ -4,7 +4,8 @@ function generateReceptor() {
 	receptor.animation.addByPrefix('static', 'arrow' + stringSect.toUpperCase());
 	receptor.animation.addByPrefix('pressed', stringSect + ' press', 24, false);
 	receptor.animation.addByPrefix('confirm', stringSect + ' confirm', 24, false);
-	receptor.animation.play('static');
+	receptor.addOffset('confirm', 62, 62);
+	receptor.playAnim('static');
 }
 
 function generateNote() {
@@ -23,5 +24,5 @@ function generateNote() {
 	note.animation.addByPrefix('bluehold', 'blue hold piece');
 
 	var stringSect:String = getNoteColor();
-	note.animation.play(stringSect+'Scroll');
+	note.playAnim(stringSect+'Scroll');
 }

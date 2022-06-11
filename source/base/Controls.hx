@@ -32,7 +32,7 @@ class Controls
 		"back" => [Keyboard.ESCAPE, null]
 	];
 
-	static var keyPressed:Array<Int> = [];
+	public static var keyPressed:Array<Int> = [];
 
 	public static function init()
 	{

@@ -6,4 +6,10 @@ function loadAnimations() {
 	character.animation.addByPrefix('singLEFT', 'Dad Sing Note LEFT', 24);
 
 	character.playAnim('idle');
+
+	character.addOffset('idle', 0, 0);
+	character.addOffset('singUP', -6, 50);
+	character.addOffset('singRIGHT', 0, 27);
+	character.addOffset('singLEFT', -10, 10);
+	character.addOffset('singDOWN', 0, -30);
 }

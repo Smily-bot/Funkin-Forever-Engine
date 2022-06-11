@@ -1,5 +1,6 @@
 package funkin;
 
+import base.ForeverDependencies.OffsettedSprite;
 import base.ScriptHandler.ForeverModule;
 import base.ScriptHandler;
 import flixel.FlxSprite;
@@ -61,12 +62,6 @@ class Strumline extends FlxSpriteGroup
 		add(receptors);
 		add(notesGroup);
 	}
-
-	public function createNote(beatTime:Float, index:Int, noteType:String)
-	{
-		var newNote:Note = new Note(beatTime, index, noteType);
-		notesGroup.add(newNote);
-	}
 }
 
 typedef ReceptorData =
@@ -79,7 +74,7 @@ typedef ReceptorData =
 	var antialiasing:Bool;
 }
 
-class Receptor extends FlxSprite
+class Receptor extends OffsettedSprite
 {
 	public var swagWidth:Float;
 
@@ -105,9 +100,9 @@ class Receptor extends FlxSprite
 		noteModule.get('generateReceptor')();
 	}
 
-	function getNoteDirection()
+	public function getNoteDirection()
 		return receptorData.actions[noteData];
 
-	function getNoteColor()
+	public function getNoteColor()
 		return receptorData.colors[noteData];
 }
