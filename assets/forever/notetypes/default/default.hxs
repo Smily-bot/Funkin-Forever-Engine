@@ -14,15 +14,26 @@ function generateNote() {
 	note.animation.addByPrefix('redScroll', 'red0');
 	note.animation.addByPrefix('blueScroll', 'blue0');
 	note.animation.addByPrefix('purpleScroll', 'purple0');
-	note.animation.addByPrefix('purpleholdend', 'pruple end hold');
-	note.animation.addByPrefix('greenholdend', 'green hold end');
-	note.animation.addByPrefix('redholdend', 'red hold end');
-	note.animation.addByPrefix('blueholdend', 'blue hold end');
+
+	var stringSect:String = getNoteColor();
+	note.playAnim(stringSect+'Scroll');
+}
+
+function generateSustain() {
+	note.frames = getAsset('NOTE_assets', 'sparrow');
 	note.animation.addByPrefix('purplehold', 'purple hold piece');
 	note.animation.addByPrefix('greenhold', 'green hold piece');
 	note.animation.addByPrefix('redhold', 'red hold piece');
 	note.animation.addByPrefix('bluehold', 'blue hold piece');
+	//
+	note.animation.addByPrefix('purpleholdend', 'pruple end hold');
+	note.animation.addByPrefix('greenholdend', 'green hold end');
+	note.animation.addByPrefix('redholdend', 'red hold end');
+	note.animation.addByPrefix('blueholdend', 'blue hold end');
 
 	var stringSect:String = getNoteColor();
-	note.playAnim(stringSect+'Scroll');
+
+	note.playAnim(stringSect+'holdend');
+	if (note.prevNote != null && note.prevNote.isSustain)
+		note.prevNote.playAnim(stringSect+'hold');
 }

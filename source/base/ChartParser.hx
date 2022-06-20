@@ -2,6 +2,7 @@ package base;
 
 import AssetManager.EngineImplementation;
 import base.MusicSynced;
+import funkin.Note;
 import haxe.Json;
 import states.MusicBeatState;
 import states.PlayState;
@@ -43,7 +44,8 @@ typedef LegacySong =
 
 class ChartParser
 {
-	public static var difficultyArray:Array<String> = ['-easy', '', '-hard'];
+	public static var unspawnedNoteList:Array<Note> = [];
+	public static var difficultyMap:Map<Int, Array<String>> = [0 => ['-easy'], 1 => [''], 2 => ['-hard']];
 
 	public static function loadChart(state:MusicHandler, songName:String = 'test', difficulty:Int, songType:EngineImplementation = FNF_LEGACY):SongFormat
 	{
@@ -56,7 +58,7 @@ class ChartParser
 			default:
 				var startTime:Float = Sys.time();
 				// pre 0.3 chart loader
-				var rawChart = AssetManager.getAsset(songName + difficultyArray[difficulty], JSON, 'songs/$songName');
+				var rawChart = AssetManager.getAsset(songName + difficultyMap[difficulty][0], JSON, 'songs/$songName');
 				var legacySong:LegacySong = cast Json.parse(rawChart).song;
 
 				// convert to standard format
@@ -80,7 +82,7 @@ class ChartParser
 				{
 					// add it to the return song stuff
 					var cameraEvent:CameraEvent = {
-						beatTime: i * 16,
+						stepTime: i * 16,
 						simple: true,
 						mustPress: legacySong.notes[i].mustHitSection
 					}
@@ -92,12 +94,12 @@ class ChartParser
 						if (j[1] >= 0)
 						{
 							var newNote:UnspawnedNote = {
-								beatTime: (j[0] / Conductor.stepCrochet),
+								stepTime: (j[0] / Conductor.stepCrochet),
 								// this formula sucks lmfao the base game format is ew
 								strumline: ((legacySong.notes[i].mustHitSection && j[1] <= 3 || !legacySong.notes[i].mustHitSection && j[1] > 3) ? 1 : 0),
 								index: Std.int(j[1] % 4),
 								type: 'default',
-								holdBeat: j[2],
+								holdStep: (j[2] / Conductor.stepCrochet),
 								animationString: '',
 							}
 							returnSong.notes.push(newNote);
@@ -109,10 +111,9 @@ class ChartParser
 					}
 				}
 
-				// sort notes
 				haxe.ds.ArraySort.sort(returnSong.notes, function(a, b):Int
 				{
-					return Std.int(a.beatTime - b.beatTime);
+					return Std.int(a.stepTime - b.stepTime);
 				});
 
 				// psych events LOL
@@ -129,5 +130,35 @@ class ChartParser
 	 * [Returns the events and notes of a loaded chart]
 	 * @param song The song to parse (in song format from loadChart)
 	 */
-	public static function parseChart(song:SongFormat) {}
+	public static function parseChart(song:SongFormat):SongFormat
+	{
+		unspawnedNoteList = [];
+		for (unspawnNote in song.notes)
+		{
+			var newNote:Note = new Note(unspawnNote.stepTime, unspawnNote.index, unspawnNote.type, unspawnNote.strumline);
+			unspawnedNoteList.push(newNote);
+			if (unspawnNote.holdStep > 0)
+			{
+				var sustainLength = Std.int(unspawnNote.holdStep);
+				for (i in 1...sustainLength)
+				{
+					var newNote:Note = new Note(unspawnNote.stepTime + i, unspawnNote.index, unspawnNote.type, unspawnNote.strumline, true,
+						unspawnedNoteList[Std.int(unspawnedNoteList.length - 1)]);
+					unspawnedNoteList.push(newNote);
+				}
+			}
+			song.notes.splice(song.notes.indexOf(unspawnNote), 0);
+		}
+
+		// hold note bullshit
+
+		// sort notes
+		// /*
+		haxe.ds.ArraySort.sort(unspawnedNoteList, function(a, b):Int
+		{
+			return Std.int(a.stepTime - b.stepTime);
+		});
+		//  */
+		return song;
+	}
 }
