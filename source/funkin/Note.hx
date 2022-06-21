@@ -37,6 +37,7 @@ class Note extends OffsettedSprite
 
 	public var tooLate:Bool = false;
 	public var canBeHit:Bool = false;
+	public var wasGoodHit:Bool = false;
 
 	public static var scriptCache:Map<String, ForeverModule> = [];
 	public static var dataCache:Map<String, ReceptorData> = [];
