@@ -2,6 +2,7 @@ package base;
 
 import AssetManager.EngineImplementation;
 import base.MusicSynced;
+import flixel.util.FlxSort;
 import funkin.Note;
 import haxe.Json;
 import states.MusicBeatState;
@@ -140,10 +141,12 @@ class ChartParser
 			if (unspawnNote.holdStep > 0)
 			{
 				var sustainLength = Std.int(unspawnNote.holdStep);
-				for (i in 1...sustainLength)
+				for (i in 0...sustainLength)
 				{
-					var newNote:Note = new Note(unspawnNote.stepTime + i, unspawnNote.index, unspawnNote.type, unspawnNote.strumline, true,
+					var newNote:Note = new Note(unspawnNote.stepTime + (i + 1), unspawnNote.index, unspawnNote.type, unspawnNote.strumline, true,
 						unspawnedNoteList[Std.int(unspawnedNoteList.length - 1)]);
+					if (i == sustainLength - 1)
+						newNote.isSustainEnd = true;
 					unspawnedNoteList.push(newNote);
 				}
 			}
@@ -154,9 +157,9 @@ class ChartParser
 
 		// sort notes
 		// /*
-		haxe.ds.ArraySort.sort(unspawnedNoteList, function(a, b):Int
+		unspawnedNoteList.sort(function(Obj1, Obj2):Int
 		{
-			return Std.int(a.stepTime - b.stepTime);
+			return FlxSort.byValues(FlxSort.ASCENDING, Obj1.stepTime, Obj2.stepTime);
 		});
 		//  */
 		return song;

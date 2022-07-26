@@ -42,7 +42,7 @@ class Character extends OffsettedSprite
 		switch (engineImplementation)
 		{
 			case FOREVER:
-				frames = AssetManager.getAsset('$characterAtlas', SPARROW, 'characters/$character');
+				// frames = AssetManager.getAsset('$characterAtlas', SPARROW, 'characters/$character');
 				var exposure:StringMap<Dynamic> = new StringMap<Dynamic>();
 				exposure.set('character', this);
 				var character:ForeverModule = ScriptHandler.loadModule(character, 'characters/$character', exposure);
@@ -81,12 +81,9 @@ class Character extends OffsettedSprite
 
 		dance();
 
-		// x += characterData.offsetX;
-		// trace('character ${curCharacter} scale ${scale.y}');
-		// y += (characterData.offsetY - (frameHeight * scale.y));
-
 		setPosition(x, y);
-		this.y -= (frameHeight * scale.y);
+		this.x += characterOffset.x;
+		this.y += (characterOffset.y - (frameHeight * scale.y));
 
 		return this;
 	}

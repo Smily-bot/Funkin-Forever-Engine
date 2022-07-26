@@ -16,6 +16,8 @@ class Note extends OffsettedSprite
 	public var isSustain:Bool = false;
 	//
 	public var prevNote:Note;
+	public var isSustainEnd:Bool = false;
+	public var endHoldOffset:Float = Math.NEGATIVE_INFINITY;
 
 	// values
 	public var offsetX:Float = 0;

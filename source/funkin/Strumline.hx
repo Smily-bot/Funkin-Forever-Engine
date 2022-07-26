@@ -22,6 +22,9 @@ class Strumline extends FlxSpriteGroup
 	public var displayJudgement:Bool = false;
 
 	public var notesGroup:FlxTypedSpriteGroup<Note>;
+	public var holdGroup:FlxTypedSpriteGroup<Note>;
+	public var allNotes:FlxTypedSpriteGroup<Note>;
+
 	public var receptorData:ReceptorData;
 
 	public function new(?x_position:Float = 0, ?y_position:Float = 0, ?strumlineType:String = 'default', ?autoplay:Bool = true,
@@ -35,6 +38,8 @@ class Strumline extends FlxSpriteGroup
 		this.displayJudgement = displayJudgement;
 
 		notesGroup = new FlxTypedSpriteGroup<Note>();
+		holdGroup = new FlxTypedSpriteGroup<Note>();
+		allNotes = new FlxTypedSpriteGroup<Note>();
 
 		// load receptor data
 		receptorData = Note.returnNoteData(strumlineType);
@@ -60,7 +65,23 @@ class Strumline extends FlxSpriteGroup
 			receptors.add(receptor);
 		}
 		add(receptors);
+		//
+		add(holdGroup);
 		add(notesGroup);
+	}
+
+	override public function add(sprite:FlxSprite):FlxSprite
+	{
+		if (Std.isOfType(sprite, Note))
+		{
+			var newNote = cast(sprite, Note);
+			if (newNote.isSustain)
+				holdGroup.add(newNote);
+			else
+				notesGroup.add(newNote);
+			return allNotes.add(newNote);
+		}
+		return super.add(sprite);
 	}
 }
 

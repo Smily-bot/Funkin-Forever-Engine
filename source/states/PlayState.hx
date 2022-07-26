@@ -93,7 +93,7 @@ class PlayState extends MusicBeatState
 		camHUD.bgColor.alpha = 0;
 		FlxG.cameras.add(camHUD);
 
-		song = ChartParser.loadChart(this, "milf", 2, FNF_LEGACY);
+		song = ChartParser.loadChart(this, "madness", 2, FNF_LEGACY);
 
 		Conductor.boundSong.play();
 		Conductor.boundVocals.play();
@@ -105,17 +105,19 @@ class PlayState extends MusicBeatState
 		boyfriend = new Character(750, 850, PSYCH, 'bf-psych', 'BOYFRIEND', true);
 		add(boyfriend);
 
-		dad = new Character(50, 850, FOREVER, 'pico', 'Pico_FNF_assetss', false);
+		dad = new Character(50, 850, FOREVER, 'tricky', 'tricky', false);
 		add(dad);
 
 		// handle UI stuff
 		strumlines = new FlxTypedGroup<Strumline>();
 		var separation:Float = FlxG.width / 4;
 		// dad
-		dadStrums = new Strumline((FlxG.width / 2) - separation, FlxG.height / 6, 'default', true, false, [dad], [dad]);
+		dadStrums = new Strumline((FlxG.width / 2) - separation, (downscroll ? FlxG.height - FlxG.height / 6 : FlxG.height / 6), 'default', true, false,
+			[dad], [dad]);
 		strumlines.add(dadStrums);
 		// bf
-		bfStrums = new Strumline((FlxG.width / 2) + separation, FlxG.height / 6, 'default', false, true, [boyfriend], [boyfriend]);
+		bfStrums = new Strumline((FlxG.width / 2) + separation, (downscroll ? FlxG.height - FlxG.height / 6 : FlxG.height / 6), 'default', false, true,
+			[boyfriend], [boyfriend]);
 		strumlines.add(bfStrums);
 		add(strumlines);
 		controlledStrumlines = [bfStrums];
@@ -125,19 +127,6 @@ class PlayState extends MusicBeatState
 		ui = new UI();
 		add(ui);
 		ui.cameras = [camHUD];
-
-		// debug shit
-		/*
-			var myNote:Note = new Note(0, 0, 'default');
-			myNote.screenCenter();
-			myNote.cameras = [camHUD];
-			add(myNote);
-
-			tiledSprite = new FlxTiledSpriteExt(AssetManager.getAsset('NOTE_assets', IMAGE, 'notetypes/default'), 128, 128, true, true);
-			tiledSprite.screenCenter();
-			tiledSprite.cameras = [camHUD];
-			add(tiledSprite);
-			// */
 
 		// create the game camera
 		var camPos:FlxPoint = new FlxPoint(boyfriend.x + (boyfriend.width / 2), boyfriend.y + (boyfriend.height / 2));
@@ -160,10 +149,10 @@ class PlayState extends MusicBeatState
 
 	public static var songSpeed:Float = 0;
 
+	public var downscroll:Bool = false;
+
 	override public function update(elapsed:Float)
 	{
-		super.update(elapsed);
-
 		var lerpVal:Float = (elapsed * 2.4) * cameraSpeed; // cval
 		camFollowPos.setPosition(FlxMath.lerp(camFollowPos.x, camFollow.x, lerpVal), FlxMath.lerp(camFollowPos.y, camFollow.y, lerpVal));
 
@@ -171,10 +160,12 @@ class PlayState extends MusicBeatState
 		cameraZoomConverse(elapsed);
 
 		// tiledSprite.scrollX += elapsed / (1 / 60);
-		if (FlxG.keys.justPressed.UP)
-			songSpeed += 0.1;
-		else if (FlxG.keys.justPressed.DOWN)
-			songSpeed -= 0.1;
+		if (FlxG.keys.pressed.UP)
+			songSpeed += 0.01;
+		else if (FlxG.keys.pressed.DOWN)
+			songSpeed -= 0.01;
+
+		super.update(elapsed);
 
 		if (song != null)
 		{
@@ -198,11 +189,11 @@ class PlayState extends MusicBeatState
 			{
 				var strumline:Strumline = strumlines.members[unspawnNote.strumline];
 				if (strumline != null)
-					strumline.notesGroup.add(unspawnNote);
+					strumline.add(unspawnNote);
 			}, -(16 * Conductor.stepCrochet));
 
 			// control notes
-			var downscrollMultiplier:Int = 1;
+			var downscrollMultiplier:Int = (!downscroll ? 1 : -1) * FlxMath.signOf(songSpeed);
 			for (strumline in strumlines)
 			{
 				for (receptor in strumline.receptors)
@@ -211,7 +202,7 @@ class PlayState extends MusicBeatState
 						receptor.playAnim('static');
 				}
 
-				strumline.notesGroup.forEachAlive(function(strumNote:Note)
+				strumline.allNotes.forEachAlive(function(strumNote:Note)
 				{
 					if (Math.floor(strumNote.noteData) >= 0)
 					{
@@ -219,26 +210,31 @@ class PlayState extends MusicBeatState
 						if (strumNote.useCustomSpeed)
 							strumNote.noteSpeed = strumNote.customNoteSpeed;
 						else
-							strumNote.noteSpeed = songSpeed;
+							strumNote.noteSpeed = Math.abs(songSpeed);
 
 						// update position
 						var baseY = strumline.receptors.members[Math.floor(strumNote.noteData)].y;
 						var baseX = strumline.receptors.members[Math.floor(strumNote.noteData)].x;
 						strumNote.x = baseX + strumNote.offsetX;
-						var roundedSpeed = FlxMath.roundDecimal(songSpeed, 2);
+						var roundedSpeed = FlxMath.roundDecimal(strumNote.noteSpeed, 2);
 						strumNote.y = baseY
 							+ strumNote.offsetY
-							+ (downscrollMultiplier *
-								-((Conductor.songPosition - (strumNote.stepTime * Conductor.stepCrochet)) * (0.45 * strumNote.noteSpeed)));
+							+ (downscrollMultiplier * -((Conductor.songPosition - (strumNote.stepTime * Conductor.stepCrochet)) * (0.45 * roundedSpeed)));
 
-						var center:Float = baseY + (strumNote.receptorData.separation * strumNote.receptorData.size) / 2;
+						var noteSize:Float = (strumNote.receptorData.separation * strumNote.receptorData.size);
+						var center:Float = baseY + (noteSize / 2);
 						if (strumNote.isSustain)
 						{
-							if (downscrollMultiplier * strumNote.noteSpeed < 0)
+							// note placement
+							strumNote.y -= ((noteSize / 2) * downscrollMultiplier);
+
+							// note clipping
+							if (downscrollMultiplier < 0)
 							{
 								strumNote.flipY = true;
 								if (strumNote.y - strumNote.offset.y * strumNote.scale.y + strumNote.height >= center
-									&& (strumline.autoplay || strumNote.wasGoodHit))
+									&& (strumline.autoplay
+										|| (strumNote.wasGoodHit || (strumNote.prevNote != null && strumNote.prevNote.wasGoodHit))))
 								{
 									var swagRect = new FlxRect(0, 0, strumNote.frameWidth, strumNote.frameHeight);
 									swagRect.height = (center - strumNote.y) / strumNote.scale.y;
@@ -246,10 +242,11 @@ class PlayState extends MusicBeatState
 									strumNote.clipRect = swagRect;
 								}
 							}
-							else if (downscrollMultiplier * strumNote.noteSpeed > 0)
+							else if (downscrollMultiplier > 0)
 							{
 								if (strumNote.y + strumNote.offset.y * strumNote.scale.y <= center
-									&& (strumline.autoplay || strumNote.wasGoodHit))
+									&& (strumline.autoplay
+										|| (strumNote.wasGoodHit || (strumNote.prevNote != null && strumNote.prevNote.wasGoodHit))))
 								{
 									var swagRect = new FlxRect(0, 0, strumNote.width / strumNote.scale.x, strumNote.height / strumNote.scale.y);
 									swagRect.y = (center - strumNote.y) / strumNote.scale.y;
@@ -259,7 +256,8 @@ class PlayState extends MusicBeatState
 							}
 						}
 
-						if (strumNote.y < -strumNote.height && (strumNote.tooLate || strumNote.wasGoodHit))
+						if ((strumNote.y < -strumNote.height || strumNote.y > FlxG.height + strumNote.height)
+							&& (strumNote.tooLate || strumNote.wasGoodHit))
 							strumNote.destroy();
 					}
 
@@ -285,7 +283,7 @@ class PlayState extends MusicBeatState
 					}
 				}
 
-				strumline.notesGroup.forEachAlive(function(coolNote:Note)
+				strumline.holdGroup.forEachAlive(function(coolNote:Note)
 				{
 					for (receptor in strumline.receptors)
 					{
@@ -413,7 +411,7 @@ class PlayState extends MusicBeatState
 					if (action == receptor.action)
 					{
 						// placeholder
-						trace(action);
+						// trace(action);
 
 						var possibleNoteList:Array<Note> = [];
 						var pressedNotes:Array<Note> = [];
@@ -492,7 +490,7 @@ class PlayState extends MusicBeatState
 					if (action == receptor.action)
 					{
 						// placeholder
-						trace(action);
+						// trace(action);
 						receptor.playAnim('static');
 					}
 				}
