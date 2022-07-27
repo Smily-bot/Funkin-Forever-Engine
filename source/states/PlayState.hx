@@ -93,7 +93,7 @@ class PlayState extends MusicBeatState
 		camHUD.bgColor.alpha = 0;
 		FlxG.cameras.add(camHUD);
 
-		song = ChartParser.loadChart(this, "madness", 2, FNF_LEGACY);
+		song = ChartParser.loadChart(this, "bullet-time", 1, FNF_LEGACY);
 
 		Conductor.boundSong.play();
 		Conductor.boundVocals.play();

@@ -38,9 +38,7 @@ typedef Pack =
  */
 class AssetManager
 {
-	public static var defaultPack:String = 'forever';
 	public static var keyedAssets:Map<String, Dynamic> = [];
-	public static var existingPackOrder:Array<Pack> = [];
 
 	/**
 	 * Returns an Asset based on the parameters and groups given.
@@ -48,7 +46,7 @@ class AssetManager
 	 * @param group The asset group used to index the asset, like IMAGES or SONGS
 	 * @return Dynamic
 	 */
-	public static function getAsset(directory:String, ?type:AssetType = DIRECTORY, ?group:String, ?packName:String):Dynamic
+	public static function getAsset(directory:String, ?type:AssetType = DIRECTORY, ?group:String):Dynamic
 	{
 		var gottenPath = getPath(directory, group, type);
 		switch (type)
@@ -143,15 +141,8 @@ class AssetManager
 	public static function getPath(directory:String, group:String, ?type:AssetType = DIRECTORY):String
 	{
 		var pathBase:String = 'assets/';
-		var directoryExtension:String = '/$group/$directory';
-		for (i in existingPackOrder)
-		{
-			var filteredPath = filterExtensions('$pathBase${i.name}$directoryExtension', type);
-			if (FileSystem.exists(filteredPath))
-				return filteredPath;
-		}
-		var tempPack:String = defaultPack;
-		return filterExtensions('$pathBase$tempPack$directoryExtension', type);
+		var directoryExtension:String = '$group/$directory';
+		return filterExtensions('$pathBase$directoryExtension', type);
 	}
 
 	public static function filterExtensions(directory:String, type:String)

@@ -63,6 +63,7 @@ class ForeverModule
 {
 	public var interp:Interp;
 	public var assetGroup:String;
+	public var path:Paths; // the defined path
 
 	public function new(?contents:Expr, ?assetGroup:String, ?extraParams:StringMap<Dynamic>)
 	{
@@ -79,6 +80,9 @@ class ForeverModule
 		// Asset functionality
 		this.assetGroup = assetGroup;
 		interp.variables.set('getAsset', getAsset);
+		// define the current path (used within the script itself)
+		var path = new Paths(assetGroup);
+		interp.variables.set('Paths', path);
 		interp.execute(contents);
 	}
 
