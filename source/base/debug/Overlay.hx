@@ -15,7 +15,7 @@ import openfl.text.TextFormat;
 class Overlay extends TextField
 {
 	var times:Array<Float> = [];
-	var memPeak:Float = 0;
+	var memPeak:UInt = 0;
 
 	public function new(x:Float, y:Float)
 	{
@@ -33,10 +33,20 @@ class Overlay extends TextField
 		addEventListener(Event.ENTER_FRAME, update);
 	}
 
-	static final intervalArray:Array<String> = ['KB', 'MB', 'GB', 'TB'];
+	static final intervalArray:Array<String> = ['B', 'KB', 'MB', 'GB', 'TB'];
+	public static function getInterval(num:UInt):String
+	{
+		var size:Float = num;
+		var data = 0;
+		while (size > 1024 && data < intervalArray.length - 1)
+		{
+			data++;
+			size = size / 1024;
+		}
 
-	var memInterval:Int = 0;
-	var memPeakInterval:Int = 0;
+		size = Math.round(size * 100) / 100;
+		return size + " " + intervalArray[data];
+	}
 
 	function update(_:Event)
 	{
@@ -45,23 +55,12 @@ class Overlay extends TextField
 		while (times[0] < now - 1)
 			times.shift();
 
-		var mem:Float = System.totalMemory / 1024 / 1024 * 1000;
-		// /*
-		for (i in 0...intervalArray.length)
-		{
-			if (mem > Math.pow(1000, i))
-				memInterval = i;
-		}
-		//  */
-		mem /= Math.pow(1000, memInterval);
-		mem = Math.round(mem * 100) / 100;
-		if (mem > memPeak)
-		{
-			memPeak = mem;
-			memPeakInterval = memInterval;
-		}
+		var mem = System.totalMemory;
+		if (mem > memPeak) memPeak = mem;
 
 		if (visible)
-			text = times.length + " FPS\n" + mem + ' ${intervalArray[memInterval]} / ' + memPeak + ' ${intervalArray[memPeakInterval]}\n';
+		{
+			text = times.length + 'FPS\n${getInterval(mem)} / ${getInterval(memPeak)}\n';
+		}
 	}
 }
