@@ -138,12 +138,12 @@ class ChartParser
 		{
 			var newNote:Note = new Note(unspawnNote.stepTime, unspawnNote.index, unspawnNote.type, unspawnNote.strumline);
 			unspawnedNoteList.push(newNote);
-			if (unspawnNote.holdStep > 0)
+			if (unspawnNote.holdStep > 0 && Note.returnNoteScript(unspawnNote.type).exists('generateSustain'))
 			{
-				var sustainLength = Std.int(unspawnNote.holdStep);
+				var sustainLength = Std.int(unspawnNote.holdStep + 1);
 				for (i in 0...sustainLength)
 				{
-					var newNote:Note = new Note(unspawnNote.stepTime + (i + 1), unspawnNote.index, unspawnNote.type, unspawnNote.strumline, true,
+					var newNote:Note = new Note(unspawnNote.stepTime + i, unspawnNote.index, unspawnNote.type, unspawnNote.strumline, true,
 						unspawnedNoteList[Std.int(unspawnedNoteList.length - 1)]);
 					if (i == sustainLength - 1)
 						newNote.isSustainEnd = true;

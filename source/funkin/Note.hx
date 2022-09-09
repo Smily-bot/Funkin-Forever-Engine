@@ -1,23 +1,31 @@
 package funkin;
 
 import base.Conductor;
-import base.ForeverDependencies.OffsettedSprite;
+import base.ForeverDependencies.ForeverSprite;
 import base.ScriptHandler.ForeverModule;
 import base.ScriptHandler;
 import funkin.Strumline.ReceptorData;
 import haxe.Json;
 import states.PlayState;
 
-class Note extends OffsettedSprite
+class Note extends ForeverSprite
 {
 	public var noteData:Int;
 	public var stepTime:Float;
 	public var strumline:Int = 0;
 	public var isSustain:Bool = false;
+	public var isMine:Bool = false; // for mine notes / hurt notes
 	//
 	public var prevNote:Note;
 	public var isSustainEnd:Bool = false;
 	public var endHoldOffset:Float = Math.NEGATIVE_INFINITY;
+	//
+	public var noteHealth:Float = 1;
+	public var lowPriority:Bool = false;
+	public var hitboxLength:Float = 1;
+
+	public var parentNote:Note;
+	public var childrenNotes:Array<Note> = [];
 
 	// values
 	public var offsetX:Float = 0;
@@ -57,6 +65,17 @@ class Note extends OffsettedSprite
 
 		super();
 
+		// determine parent note
+		if (isSustain && prevNote != null)
+		{
+			parentNote = prevNote;
+			while (parentNote.parentNote != null)
+				parentNote = parentNote.parentNote;
+			parentNote.childrenNotes.push(this);
+		}
+		else if (!isSustain)
+			parentNote = null;
+
 		loadNote(noteType);
 	}
 
@@ -65,14 +84,18 @@ class Note extends OffsettedSprite
 		receptorData = returnNoteData(noteType);
 		noteModule = returnNoteScript(noteType);
 
-		noteModule.interp.variables.set('note', this);
 		// truncated loading functions by a ton
 		noteModule.interp.variables.set('getNoteDirection', getNoteDirection);
 		noteModule.interp.variables.set('getNoteColor', getNoteColor);
 
 		var generationScript:String = isSustain ? 'generateSustain' : 'generateNote';
 		if (noteModule.exists(generationScript))
-			noteModule.get(generationScript)();
+			noteModule.get(generationScript)(this);
+		else
+		{
+			this.destroy();
+			return;
+		}
 
 		// set note data stuffs
 		antialiasing = receptorData.antialiasing;
@@ -130,12 +153,33 @@ class Note extends OffsettedSprite
 
 	override public function update(elapsed:Float)
 	{
-		if (stepTime > Conductor.stepPosition - (Conductor.msThreshold / Conductor.stepCrochet) //
-			&& stepTime < Conductor.stepPosition + (Conductor.msThreshold / Conductor.stepCrochet))
+		if ((stepTime * Conductor.stepCrochet) > (Conductor.songPosition - Timings.threshold * hitboxLength) //
+			&& (stepTime * Conductor.stepCrochet) < (Conductor.songPosition + Timings.threshold * hitboxLength))
 			canBeHit = true;
 		else
 			canBeHit = false;
 
 		super.update(elapsed);
+
+		if (noteModule.exists('onUpdate'))
+			noteModule.get('onUpdate')(this);
+	}
+
+	public function noteHit()
+	{
+		if (noteModule.exists('onHit'))
+			noteModule.get('onHit')(this);
+	}
+
+	public function stepHit()
+	{
+		if (noteModule.exists('onStep'))
+			noteModule.get('onStep')(this);
+	}
+
+	public function beatHit()
+	{
+		if (noteModule.exists('onBeat'))
+			noteModule.get('onBeat')(this);
 	}
 }

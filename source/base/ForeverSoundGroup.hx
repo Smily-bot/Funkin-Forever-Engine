@@ -33,15 +33,27 @@ class ForeverSoundGroup
 		return newTime;
 	}
 
+	public var pitch(default, set):Float;
+
+	public function set_pitch(newPitch:Float):Float
+	{
+		for (i in sounds)
+			i.pitch = newPitch;
+		return pitch = newPitch;
+	}
+
 	/**
 	 * [Creates a Sound Group with multiple Sounds]
 	 * @param newSounds an Array of Sounds you would like the group to include
 	 */
-	public function new(newSounds:Array<Sound>)
+	public function new(?newSounds:Array<Sound>)
 	{
 		// return all of the sounds
-		for (i in newSounds)
-			sounds.push(new FlxSound().loadEmbedded(i));
+		if (newSounds != null)
+		{
+			for (i in newSounds)
+				sounds.push(new FlxSound().loadEmbedded(i));
+		}
 	}
 
 	/**

@@ -3,15 +3,33 @@
 **/
 class Paths
 {
-	public var publicPath:String;
-
-	public function new(publicPath:String)
+	inline public static function image(key:String)
 	{
-		this.publicPath = publicPath;
+		return AssetManager.getAsset(key, IMAGE);
 	}
 
-	public function image(key:String, ?textureCompression:Bool = false)
+	inline public static function getSparrowAtlas(key:String)
 	{
-		return AssetManager.getAsset(key, IMAGE, publicPath);
+		return AssetManager.getAsset(key, SPARROW);
+	}
+}
+
+class LocalPath
+{
+	public var localPath:String;
+
+	public function new(localPath:String)
+	{
+		this.localPath = localPath;
+	}
+
+	private function image(key:String, ?gpuRender:Bool = false)
+	{
+		return AssetManager.getAsset(key, IMAGE, localPath);
+	}
+
+	private function getSparrowAtlas(key:String)
+	{
+		return AssetManager.getAsset(key, SPARROW, localPath);
 	}
 }

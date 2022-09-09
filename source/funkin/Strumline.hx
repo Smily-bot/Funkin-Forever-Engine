@@ -1,6 +1,6 @@
 package funkin;
 
-import base.ForeverDependencies.OffsettedSprite;
+import base.ForeverDependencies.ForeverSprite;
 import base.ScriptHandler.ForeverModule;
 import base.ScriptHandler;
 import flixel.FlxSprite;
@@ -13,6 +13,7 @@ import sys.io.File;
 class Strumline extends FlxSpriteGroup
 {
 	public var receptors:FlxTypedSpriteGroup<Receptor>;
+	public var noteSplashes:FlxTypedSpriteGroup<ForeverSprite>;
 	public var keyAmount:Int = 4;
 
 	public var characterList:Array<Character> = [];
@@ -28,7 +29,7 @@ class Strumline extends FlxSpriteGroup
 	public var receptorData:ReceptorData;
 
 	public function new(?x_position:Float = 0, ?y_position:Float = 0, ?strumlineType:String = 'default', ?autoplay:Bool = true,
-			?displayJudgement:Bool = false, ?characterList:Array<Character>, ?singingList:Array<Character>)
+			?displayJudgement:Bool = false, ?characterList:Array<Character>, ?singingList:Array<Character>, ?overrideSize:Float)
 	{
 		super();
 		this.characterList = characterList;
@@ -55,6 +56,13 @@ class Strumline extends FlxSpriteGroup
 			receptor.setGraphicSize(Std.int(receptor.width * receptorData.size));
 			receptor.updateHitbox();
 			receptor.swagWidth = receptorData.separation * receptorData.size;
+			if (overrideSize != null)
+			{
+				receptor.setGraphicSize(Std.int((receptor.width / receptorData.size) * overrideSize));
+				receptor.updateHitbox();
+				receptor.swagWidth = receptorData.separation * overrideSize;
+			}
+
 			receptor.setPosition(x_position - receptor.swagWidth / 2, y_position - receptor.swagWidth / 2);
 			// define receptor values
 			receptor.noteData = i;
@@ -64,10 +72,16 @@ class Strumline extends FlxSpriteGroup
 			receptor.x += (i - ((keyAmount - 1) / 2)) * receptor.swagWidth;
 			receptors.add(receptor);
 		}
-		add(receptors);
 		//
 		add(holdGroup);
+		add(receptors);
 		add(notesGroup);
+
+		if (displayJudgement)
+		{
+			noteSplashes = new FlxTypedSpriteGroup<ForeverSprite>();
+			add(noteSplashes);
+		}
 	}
 
 	override public function add(sprite:FlxSprite):FlxSprite
@@ -95,7 +109,7 @@ typedef ReceptorData =
 	var antialiasing:Bool;
 }
 
-class Receptor extends OffsettedSprite
+class Receptor extends ForeverSprite
 {
 	public var swagWidth:Float;
 
@@ -115,10 +129,9 @@ class Receptor extends OffsettedSprite
 
 		// load the receptor script
 		noteModule = Note.returnNoteScript(noteType);
-		noteModule.interp.variables.set('receptor', this);
 		noteModule.interp.variables.set('getNoteDirection', getNoteDirection);
 		noteModule.interp.variables.set('getNoteColor', getNoteColor);
-		noteModule.get('generateReceptor')();
+		noteModule.get('generateReceptor')(this);
 	}
 
 	public function getNoteDirection()

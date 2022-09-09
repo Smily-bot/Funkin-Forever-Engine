@@ -11,7 +11,12 @@ import states.MusicBeatState.MusicHandler;
  */
 typedef Judgement =
 {
+	var name:String;
 	var timing:Float;
+	var score:Float;
+	var accuracy:Float;
+	var health:Float;
+	var comboStatus:Null<String>;
 }
 
 class Conductor
@@ -20,6 +25,7 @@ class Conductor
 	public static var beatPosition:Int = 0; // ditto, but beats
 	public static var stepPosition:Int = 0; // ditto, but steps
 
+	public static var rate:Float = 1.0; // the rate of the song playback speed
 	public static var bpm:Float = 0; // beats per minute or the tempo of the song
 
 	public static var crochet:Float = ((60 / bpm) * 1000); // beats in milliseconds
@@ -31,17 +37,13 @@ class Conductor
 
 	public static final comparisonThreshold:Float = 20; // the amount of milliseconds of difference before resynchronization
 
-	public static var judgementMap:Map<String, Judgement> = ['sick' => {timing: 45}];
-	public static var msThreshold:Float = 120;
-
 	public static var bpmMap:Map<Float, Float>;
 	public static var soundGroup:FlxTypedGroup<FlxSound>;
 
 	public static function bindSong(newState:MusicHandler, newSong:Sound, songBPM:Float, ?newVocals:Array<Sound>)
 	{
 		boundSong = new FlxSound().loadEmbedded(newSong);
-		if (newVocals != null)
-			boundVocals = new ForeverSoundGroup(newVocals);
+		boundVocals = new ForeverSoundGroup(newVocals);
 		boundState = newState;
 
 		soundGroup = new FlxTypedGroup<FlxSound>();
@@ -74,7 +76,9 @@ class Conductor
 		if (boundSong.playing)
 		{
 			// update time position
-			songPosition += elapsed * 1000;
+			boundSong.pitch = rate;
+			boundVocals.pitch = rate;
+			songPosition += elapsed * 1000 * rate;
 			// trace('$songPosition');
 
 			// update the bpm
@@ -141,15 +145,80 @@ class Conductor
 	public static function resyncTime()
 	{
 		// resynchronization
-		trace('resyncing song time ${boundSong.time}');
-		songPosition = boundSong.time;
+		trace('resyncing song time ${boundSong.time}, ${songPosition}');
+		if (boundVocals != null)
+			boundVocals.pause();
+
 		boundSong.play();
+		songPosition = boundSong.time;
 		if (boundVocals != null)
 		{
-			boundVocals.pause();
 			boundVocals.time = songPosition;
 			boundVocals.play();
 		}
-		trace('new song time ${songPosition}');
+		trace('new song time ${boundSong.time}, ${songPosition}');
 	}
+}
+
+class Timings
+{
+	public static var highestFC:Int;
+	public static var combo:Int = 0;
+
+	public static var threshold:Float = 120;
+
+	// judgements
+	public static var judgements:Array<Judgement> = [
+		{
+			name: "sick",
+			timing: 45,
+			score: 350,
+			health: 100,
+			accuracy: 100,
+			comboStatus: 'SFC'
+		},
+		{
+			name: "good",
+			timing: 90,
+			score: 150,
+			health: 50,
+			accuracy: 80,
+			comboStatus: 'GFC'
+		},
+		{
+			name: "bad",
+			timing: 125,
+			score: 50,
+			health: 20,
+			accuracy: 100,
+			comboStatus: 'FC'
+		},
+		{
+			name: "shit",
+			timing: 150,
+			score: -50,
+			health: -50,
+			accuracy: 0,
+			comboStatus: null
+		},
+		{
+			name: "miss",
+			timing: 175,
+			score: -100,
+			health: -100,
+			accuracy: 0,
+			comboStatus: null
+		}
+	];
+
+	public static var scoreRating:Map<String, Int> = [
+		"S+" => 100,
+		"S" => 95,
+		"A" => 90,
+		"B" => 85,
+		"C" => 80,
+		"D" => 75,
+		"E" => 70,
+		"F" => 65
+	];
 }

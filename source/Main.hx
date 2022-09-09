@@ -39,5 +39,9 @@ class Main extends Sprite
 		FlxG.fixedTimestep = false; // This ensures that the game is not tied to the FPS
 		FlxG.mouse.useSystemCursor = true; // Use system cursor because it's prettier
 		FlxG.mouse.visible = false; // Hide mouse on start
+
+		// turn off the console lol
+		@:privateAccess
+		FlxG.console = null;
 	}
 }

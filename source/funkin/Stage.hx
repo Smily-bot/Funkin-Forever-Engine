@@ -19,6 +19,7 @@ class Stage extends FlxTypedGroup<FlxBasic>
 	}
 
 	public var cameraZoom:Float = 1;
+	public var stageBuild:ForeverModule;
 
 	public function new(stage:String, engineImplementation:EngineImplementation)
 	{
@@ -33,11 +34,19 @@ class Stage extends FlxTypedGroup<FlxBasic>
 				var exposure:StringMap<Dynamic> = new StringMap<Dynamic>();
 				exposure.set('add', add);
 				exposure.set('stage', this);
-				var stageBuild:ForeverModule = ScriptHandler.loadModule('stage', 'stages/$stage', exposure);
+				stageBuild = ScriptHandler.loadModule('stage', 'stages/$stage', exposure);
 				if (stageBuild.exists("onCreate"))
 					stageBuild.get("onCreate")();
 				trace('$stage loaded successfully');
 			default:
 		}
+	}
+
+	override public function update(elapsed:Float)
+	{
+		super.update(elapsed);
+
+		if (stageBuild.exists("onUpdate"))
+			stageBuild.get("onUpdate")(elapsed);
 	}
 }

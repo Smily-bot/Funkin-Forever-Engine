@@ -1,5 +1,6 @@
 package base.debug;
 
+import flixel.FlxG;
 import haxe.Timer;
 import openfl.events.Event;
 import openfl.system.System;
@@ -33,7 +34,8 @@ class Overlay extends TextField
 		addEventListener(Event.ENTER_FRAME, update);
 	}
 
-	static final intervalArray:Array<String> = ['B', 'KB', 'MB', 'GB', 'TB'];
+	static final intervalArray:Array<String> = ['B', 'KB', 'MB', 'GB', 'TB']; // tb support for the myth engine modders :)
+
 	public static function getInterval(num:UInt):String
 	{
 		var size:Float = num;
@@ -56,11 +58,10 @@ class Overlay extends TextField
 			times.shift();
 
 		var mem = System.totalMemory;
-		if (mem > memPeak) memPeak = mem;
+		if (mem > memPeak)
+			memPeak = mem;
 
 		if (visible)
-		{
-			text = times.length + 'FPS\n${getInterval(mem)} / ${getInterval(memPeak)}\n';
-		}
+			text = times.length + ' FPS\n${getInterval(mem)} / ${getInterval(memPeak)}\nState Object Count: ${FlxG.state.members.length}\n';
 	}
 }

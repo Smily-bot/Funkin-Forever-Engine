@@ -2,7 +2,7 @@ package funkin;
 
 import AssetManager.EngineImplementation;
 import base.Conductor;
-import base.ForeverDependencies.OffsettedSprite;
+import base.ForeverDependencies.ForeverSprite;
 import base.ScriptHandler;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
@@ -13,7 +13,7 @@ import sys.io.File;
 
 using StringTools;
 
-class Character extends OffsettedSprite
+class Character extends ForeverSprite
 {
 	public var cameraOffset:FlxPoint;
 	public var characterOffset:FlxPoint;

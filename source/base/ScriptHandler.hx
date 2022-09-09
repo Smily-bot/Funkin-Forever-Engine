@@ -1,9 +1,12 @@
 package base;
 
 import AssetManager.AssetType;
+import Paths;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.math.FlxMath;
+import funkin.Note;
+import funkin.Strumline;
 import haxe.ds.StringMap;
 import hscript.Expr;
 import hscript.Interp;
@@ -45,6 +48,9 @@ class ScriptHandler
 		exp.set("FlxMath", FlxMath);
 
 		// Classes (Forever)
+		exp.set("Conductor", Conductor);
+		exp.set("Note", Note);
+		exp.set("Strumline", Strumline);
 		parser.allowTypes = true;
 	}
 
@@ -81,7 +87,7 @@ class ForeverModule
 		this.assetGroup = assetGroup;
 		interp.variables.set('getAsset', getAsset);
 		// define the current path (used within the script itself)
-		var path = new Paths(assetGroup);
+		var path = new LocalPath(assetGroup);
 		interp.variables.set('Paths', path);
 		interp.execute(contents);
 	}
@@ -122,7 +128,7 @@ class ForeverModule
 	public function getAsset(directory:String, type:AssetType)
 	{
 		var path:String = AssetManager.getPath(directory, assetGroup, type);
-		trace('attempting path $path');
+		// trace('attempting path $path');
 		if (FileSystem.exists(path))
 			return AssetManager.getAsset(directory, type, assetGroup);
 		else

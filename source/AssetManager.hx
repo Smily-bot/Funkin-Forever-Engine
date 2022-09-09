@@ -57,12 +57,12 @@ class AssetManager
 				return returnGraphic(gottenPath, false);
 			case SPARROW:
 				var graphicPath = getPath(directory, group, IMAGE);
-				trace('sparrow graphic path $graphicPath');
-				var graphic:FlxGraphic = returnGraphic(graphicPath, true);
-				trace('sparrow xml path $gottenPath');
+				// trace('sparrow graphic path $graphicPath');
+				var graphic:FlxGraphic = returnGraphic(graphicPath, false);
+				// trace('sparrow xml path $gottenPath');
 				return FlxAtlasFrames.fromSparrow(graphic, File.getContent(gottenPath));
 			default:
-				trace('returning directory $gottenPath');
+				// trace('returning directory $gottenPath');
 				return gottenPath;
 		}
 		trace('returning null for $gottenPath');
@@ -77,9 +77,9 @@ class AssetManager
 	 * already provides a similar function that takes into account packs.
 	 * 
 	 * @param key The asset directory in its entirety. 
-	 * @param textureCompression If the image should be rendered by the GPU. (default is false)
+	 * @param gpuRender If the image should be rendered by the GPU. (default is false)
 	 */
-	public static function returnGraphic(key:String, ?textureCompression:Bool = false)
+	public static function returnGraphic(key:String, ?gpuRender:Bool = false)
 	{
 		if (FileSystem.exists(key))
 		{
@@ -87,7 +87,7 @@ class AssetManager
 			{
 				var bitmap = BitmapData.fromFile(key);
 				var newGraphic:FlxGraphic;
-				if (textureCompression)
+				if (gpuRender)
 				{
 					var texture = FlxG.stage.context3D.createTexture(bitmap.width, bitmap.height, BGRA, true);
 					texture.uploadFromBitmapData(bitmap);
@@ -95,20 +95,21 @@ class AssetManager
 					bitmap.dispose();
 					bitmap.disposeImage();
 					bitmap = null;
-					trace('new texture $key, bitmap is $bitmap');
+					// trace('new texture $key, bitmap is $bitmap');
 					newGraphic = FlxGraphic.fromBitmapData(BitmapData.fromTexture(texture), false, key, false);
 				}
 				else
 				{
 					newGraphic = FlxGraphic.fromBitmapData(bitmap, false, key, false);
-					trace('new bitmap $key, not textured');
+					// trace('new bitmap $key, not textured');
 				}
+				newGraphic.persist = true;
 				keyedAssets.set(key, newGraphic);
 			}
-			trace('graphic returning $key with gpu rendering $textureCompression');
+			// trace('graphic returning $key with gpu rendering $gpuRender');
 			return keyedAssets.get(key);
 		}
-		trace('graphic returning null at $key with gpu rendering $textureCompression');
+		trace('graphic returning null at $key with gpu rendering $gpuRender');
 		return null;
 	}
 
@@ -123,7 +124,7 @@ class AssetManager
 			if (!keyedAssets.exists(key))
 			{
 				keyedAssets.set(key, Sound.fromFile('./' + key));
-				trace('new sound $key');
+				// trace('new sound $key');
 			}
 			trace('sound returning $key');
 			return keyedAssets.get(key);
@@ -161,24 +162,24 @@ class AssetManager
 				case SOUND:
 					extensions = ['.ogg', '.wav'];
 				case FONT:
-					extensions = ['.ttf'];
+					extensions = ['.ttf', '.otf'];
 				case MODULE:
-					extensions = ['.hxs'];
+					extensions = ['.hxs', '.hx'];
 			}
-			trace(extensions);
+			// trace(extensions);
 			// apply the extension of the directory
 			for (i in extensions)
 			{
 				var returnDirectory:String = '$directory$i';
-				trace('attempting directory $returnDirectory');
+				// trace('attempting directory $returnDirectory');
 				if (FileSystem.exists(returnDirectory))
 				{
-					trace('successful extension $i');
+					// trace('successful extension $i');
 					return returnDirectory;
 				}
 			}
 		}
-		trace('no extension needed, returning $directory');
+		// trace('no extension needed, returning $directory');
 		return directory;
 	}
 }
