@@ -46,6 +46,9 @@ typedef LegacySong =
 class ChartParser
 {
 	public static var unspawnedNoteList:Array<Note> = [];
+	public static var eventList:Array<CameraEvent> = [];
+	public static var cameraEventList:Array<TimedEvent> = [];
+
 	public static var difficultyMap:Map<Int, Array<String>> = [0 => ['-easy'], 1 => [''], 2 => ['-hard']];
 
 	public static function loadChart(state:MusicHandler, songName:String = 'test', difficulty:Int, songType:EngineImplementation = FNF_LEGACY):SongFormat
@@ -133,11 +136,20 @@ class ChartParser
 	 */
 	public static function parseChart(song:SongFormat):SongFormat
 	{
+		for (i in unspawnedNoteList)
+		{
+			i.destroy();
+			unspawnedNoteList.remove(i);
+		}
 		unspawnedNoteList = [];
+		cameraEventList = [];
+		eventList = [];
+
 		for (unspawnNote in song.notes)
 		{
 			var newNote:Note = new Note(unspawnNote.stepTime, unspawnNote.index, unspawnNote.type, unspawnNote.strumline);
 			unspawnedNoteList.push(newNote);
+			// hold note bullshit
 			if (unspawnNote.holdStep > 0 && Note.returnNoteScript(unspawnNote.type).exists('generateSustain'))
 			{
 				var sustainLength = Std.int(unspawnNote.holdStep + 1);
@@ -150,10 +162,11 @@ class ChartParser
 					unspawnedNoteList.push(newNote);
 				}
 			}
-			song.notes.splice(song.notes.indexOf(unspawnNote), 0);
+			// song.notes.splice(song.notes.indexOf(unspawnNote), 0);
 		}
 
-		// hold note bullshit
+		for (cameraNote in song.cameraEvents)
+			cameraEventList.push(cameraNote);
 
 		// sort notes
 		// /*

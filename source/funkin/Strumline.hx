@@ -97,6 +97,21 @@ class Strumline extends FlxSpriteGroup
 		}
 		return super.add(sprite);
 	}
+
+	override public function remove(sprite:FlxSprite, splice:Bool = false):FlxSprite
+	{
+		if (Std.isOfType(sprite, Note))
+		{
+			var newNote = cast(sprite, Note);
+			if (newNote.isSustain)
+				holdGroup.remove(newNote);
+			else
+				notesGroup.remove(newNote);
+			allNotes.remove(newNote);
+			newNote.destroy();
+		}
+		return super.remove(sprite, splice);
+	}
 }
 
 typedef ReceptorData =

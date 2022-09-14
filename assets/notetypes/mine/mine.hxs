@@ -9,7 +9,7 @@ function generateNote(note:Note) {
 	note.playAnim('scroll');
 }
 
-function generateSplash(noteSplash:ForeverSprite, strumNote:Note) {
+function generateSplash(noteSplash:ForeverSprite, noteData:Int) {
 	noteSplash.frames = Paths.getSparrowAtlas('mine_Explosions');
 	noteSplash.animation.addByPrefix('splash', 'mineExplosion', 36, false);
 	noteSplash.setGraphicSize(Std.int(noteSplash.width * 0.5));

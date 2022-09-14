@@ -8,21 +8,21 @@ function generateReceptor(receptor:Receptor) {
 	receptor.playAnim('static');
 }
 
-function generateSplash(noteSplash:ForeverSprite, strumNote:Note) {
+function generateSplash(noteSplash:ForeverSprite, noteData:Int) {
 	noteSplash.loadGraphic(Paths.image('noteSplashes'), true, 210, 210);
 	noteSplash.animation.add('anim1', [
-		(strumNote.noteData * 2 + 1),
-		8 + (strumNote.noteData * 2 + 1),
-		16 + (strumNote.noteData * 2 + 1),
-		24 + (strumNote.noteData * 2 + 1),
-		32 + (strumNote.noteData * 2 + 1)
+		(noteData * 2 + 1),
+		8 + (noteData * 2 + 1),
+		16 + (noteData * 2 + 1),
+		24 + (noteData * 2 + 1),
+		32 + (noteData * 2 + 1)
 	], 24, false);
 	noteSplash.animation.add('anim2', [
-		(strumNote.noteData * 2),
-		8 + (strumNote.noteData * 2),
-		16 + (strumNote.noteData * 2),
-		24 + (strumNote.noteData * 2),
-		32 + (strumNote.noteData * 2)
+		(noteData * 2),
+		8 + (noteData * 2),
+		16 + (noteData * 2),
+		24 + (noteData * 2),
+		32 + (noteData * 2)
 	], 24, false);
 	// noteSplash.addOffset('anim1', -20, -10);
 	// noteSplash.addOffset('anim2', -20, -10);

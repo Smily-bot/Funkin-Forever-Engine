@@ -15,17 +15,8 @@
 
 	<!-- ____________________________ Window Settings ___________________________ -->
 
-	<!--These window settings apply to all targets-->
 	<window width="1280" height="720" fps="60" background="#000000" hardware="true" vsync="false" />
-
-	<!--HTML5-specific-->
-	<window if="html5" resizable="false" />
-
-	<!--Desktop-specific-->
 	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" />
-
-	<!--Mobile-specific-->
-	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" />
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
@@ -52,6 +43,7 @@
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
 
 	<haxedef name="FLX_NO_DEBUG" unless="debug" />
+	<haxedef name="HXCPP_GC_BIG_BLOCKS"/>
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
 
 	<!-- _________________________________ Custom _______________________________ -->

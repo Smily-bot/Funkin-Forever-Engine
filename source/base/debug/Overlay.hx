@@ -62,6 +62,6 @@ class Overlay extends TextField
 			memPeak = mem;
 
 		if (visible)
-			text = times.length + ' FPS\n${getInterval(mem)} / ${getInterval(memPeak)}\nState Object Count: ${FlxG.state.members.length}\n';
+			text = times.length + ' FPS\n${getInterval(mem)} / ${getInterval(memPeak)}\n';
 	}
 }

@@ -27,12 +27,14 @@ class MusicBeatState extends ScriptableState implements MusicHandler
 	{
 		if (Conductor.boundState == this)
 			Conductor.onFocusLost();
+		super.onFocusLost();
 	}
 
 	override public function onFocus()
 	{
 		if (Conductor.boundState == this)
 			Conductor.onFocus();
+		super.onFocus();
 	}
 
 	public function beatHit() {}
@@ -66,12 +68,14 @@ class MusicBeatSubState extends ScriptableSubState implements MusicHandler
 	{
 		if (Conductor.boundState == this)
 			Conductor.onFocusLost();
+		super.onFocusLost();
 	}
 
 	override public function onFocus()
 	{
 		if (Conductor.boundState == this)
 			Conductor.onFocus();
+		super.onFocus();
 	}
 
 	public function beatHit() {}

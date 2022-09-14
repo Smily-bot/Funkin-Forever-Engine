@@ -13,6 +13,7 @@ class Note extends ForeverSprite
 	public var noteData:Int;
 	public var stepTime:Float;
 	public var strumline:Int = 0;
+	public var noteType:String = null;
 	public var isSustain:Bool = false;
 	public var isMine:Bool = false; // for mine notes / hurt notes
 	//
@@ -81,26 +82,30 @@ class Note extends ForeverSprite
 
 	public function loadNote(noteType:String)
 	{
-		receptorData = returnNoteData(noteType);
-		noteModule = returnNoteScript(noteType);
-
-		// truncated loading functions by a ton
-		noteModule.interp.variables.set('getNoteDirection', getNoteDirection);
-		noteModule.interp.variables.set('getNoteColor', getNoteColor);
-
-		var generationScript:String = isSustain ? 'generateSustain' : 'generateNote';
-		if (noteModule.exists(generationScript))
-			noteModule.get(generationScript)(this);
-		else
+		if (this.noteType != noteType)
 		{
-			this.destroy();
-			return;
-		}
+			this.noteType = noteType;
+			receptorData = returnNoteData(noteType);
+			noteModule = returnNoteScript(noteType);
 
-		// set note data stuffs
-		antialiasing = receptorData.antialiasing;
-		setGraphicSize(Std.int(frameWidth * receptorData.size));
-		updateHitbox();
+			// truncated loading functions by a ton
+			noteModule.interp.variables.set('getNoteDirection', getNoteDirection);
+			noteModule.interp.variables.set('getNoteColor', getNoteColor);
+
+			var generationScript:String = isSustain ? 'generateSustain' : 'generateNote';
+			if (noteModule.exists(generationScript))
+				noteModule.get(generationScript)(this);
+			else
+			{
+				this.destroy();
+				return;
+			}
+
+			// set note data stuffs
+			antialiasing = receptorData.antialiasing;
+			setGraphicSize(Std.int(frameWidth * receptorData.size));
+			updateHitbox();
+		}
 	}
 
 	public function updateSustainScale()

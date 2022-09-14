@@ -37,6 +37,7 @@ class ScriptHandler
 		exp = new StringMap<Dynamic>();
 
 		// Classes (Haxe)
+		// /*
 		exp.set("Sys", Sys);
 		exp.set("Std", Std);
 		exp.set("Math", Math);
@@ -51,6 +52,8 @@ class ScriptHandler
 		exp.set("Conductor", Conductor);
 		exp.set("Note", Note);
 		exp.set("Strumline", Strumline);
+		//  */
+
 		parser.allowTypes = true;
 	}
 

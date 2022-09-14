@@ -8,7 +8,9 @@ import flixel.FlxGame;
 import flixel.FlxState;
 import openfl.Lib;
 import openfl.display.Sprite;
+import states.MusicBeatState;
 import states.PlayState;
+import states.ScriptableState;
 
 class Main extends Sprite
 {
@@ -28,20 +30,11 @@ class Main extends Sprite
 		ScriptHandler.initialize();
 
 		var gameCreate:FlxGame;
-		gameCreate = new FlxGame(1280, 720, initialState, 1, defaultFramerate, defaultFramerate, true, false);
+		gameCreate = new FlxGame(1280, 720, Init, 1, defaultFramerate, defaultFramerate, true, false);
 		addChild(gameCreate);
 
 		var overlay:Overlay;
 		overlay = new Overlay(0, 0);
 		addChild(overlay);
-
-		// FlxG.autoPause = true;
-		FlxG.fixedTimestep = false; // This ensures that the game is not tied to the FPS
-		FlxG.mouse.useSystemCursor = true; // Use system cursor because it's prettier
-		FlxG.mouse.visible = false; // Hide mouse on start
-
-		// turn off the console lol
-		@:privateAccess
-		FlxG.console = null;
 	}
 }
