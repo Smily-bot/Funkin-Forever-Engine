@@ -50,6 +50,8 @@
 	<haxedef name="HXCPP_GC_BIG_BLOCKS"/>
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
 
+	<haxedef name="no-deprecation-warnings" />
+
 	<!-- _________________________________ Custom _______________________________ -->
 
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
