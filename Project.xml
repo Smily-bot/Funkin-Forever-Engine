@@ -33,6 +33,7 @@
 	<haxelib name="flixel-ui" />
 	<haxelib name="hscript" />
 	<haxelib name="discord_rpc" />
+	<haxelib name="hxcpp-debug-server" if="debug" />
 
 	<!--In case you want to use nape with flixel-->
 	<!--<haxelib name="nape-haxe4" />-->
@@ -40,6 +41,7 @@
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
 	<haxedef name="hscriptPos" />
+	<haxeflag name="-dce no" />
 
 	<haxedef name="FLX_NO_MOUSE" if="mobile" />
 	<haxedef name="FLX_NO_KEYBOARD" if="mobile" />
