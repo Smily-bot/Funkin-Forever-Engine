@@ -13,7 +13,7 @@ class UI extends FlxSpriteGroup
 		super();
 
 		// ui stuffs!
-		var cornerMark:FlxText = new FlxText(0, 0, 0, 'FOREVER ENGINE v1.0.0\n');
+		var cornerMark:FlxText = new FlxText(0, 0, 0, 'FOREVER ENGINE v' + Main.engineVersion + '\n');
 		cornerMark.setFormat(AssetManager.getAsset('vcr', FONT, 'fonts'), 18, FlxColor.WHITE);
 		cornerMark.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
 		add(cornerMark);
