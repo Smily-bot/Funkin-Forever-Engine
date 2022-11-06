@@ -57,11 +57,14 @@ class ScriptHandler
 		parser.allowTypes = true;
 	}
 
-	public static function loadModule(path:String, ?assetGroup:String, ?extraParams:StringMap<Dynamic>)
+	public static function loadModule(path:String, ?assetGroup:String, ?extraParams:StringMap<Dynamic>):ForeverModule
 	{
 		trace('Loading Module $path');
+		var curModule:ForeverModule = null;
 		var modulePath:String = AssetManager.getAsset(path, MODULE, assetGroup);
-		return new ForeverModule(parser.parseString(File.getContent(modulePath), modulePath), assetGroup, extraParams);
+		if (FileSystem.exists(modulePath))
+			curModule = new ForeverModule(parser.parseString(File.getContent(modulePath), modulePath), assetGroup, extraParams);
+		return curModule;
 	}
 }
 

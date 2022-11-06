@@ -11,6 +11,7 @@ import states.PlayState;
 typedef SongFormat =
 {
 	var name:String;
+	var rawName:String;
 	var bpm:Float;
 	var events:Array<TimedEvent>;
 	var cameraEvents:Array<CameraEvent>;
@@ -69,6 +70,7 @@ class ChartParser
 				var returnSong:SongFormat;
 				returnSong = {
 					name: legacySong.song,
+					rawName: songName,
 					bpm: legacySong.bpm,
 					events: [],
 					cameraEvents: [],

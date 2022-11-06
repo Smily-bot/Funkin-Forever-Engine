@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbox style="spacing: 10px;">
+    <section-header text="Default Frames" />
+
+    <hbox style="spacing: 10px;">
+        <frame text="Frame 1" icon="haxeui-core/styles/default/haxeui_tiny.png" style="font-name:'assets/fonts/vcr.ttf'">
+            <hbox>
+                <button text="Item 1" />
+                <button text="Item 2" />
+                <button text="Item 3" />
+                <button text="Item 1" />
+                <button text="Item 2" />
+                <button text="Item 3" />
+            </hbox>
+        </frame>
+    </hbox> 
+</vbox>

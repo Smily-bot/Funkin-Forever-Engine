@@ -35,8 +35,8 @@
 	<haxelib name="discord_rpc" />
 	<haxelib name="hxcpp-debug-server" if="debug" />
 
-	<!--In case you want to use nape with flixel-->
-	<!--<haxelib name="nape-haxe4" />-->
+	<haxelib name="haxeui-core" />
+	<haxelib name="haxeui-flixel" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 

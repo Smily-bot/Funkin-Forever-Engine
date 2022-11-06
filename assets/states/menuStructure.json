@@ -1,0 +1,9 @@
+{
+    "mainState": "title",
+    "mainOrder": [
+        "story",
+        "freeplay",
+        "credits",
+        "options"
+    ]
+}

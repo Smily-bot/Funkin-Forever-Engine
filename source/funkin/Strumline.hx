@@ -84,33 +84,22 @@ class Strumline extends FlxSpriteGroup
 		}
 	}
 
-	override public function add(sprite:FlxSprite):FlxSprite
+	public function addNote(newNote:Note)
 	{
-		if (Std.isOfType(sprite, Note))
-		{
-			var newNote = cast(sprite, Note);
-			if (newNote.isSustain)
-				holdGroup.add(newNote);
-			else
-				notesGroup.add(newNote);
-			return allNotes.add(newNote);
-		}
-		return super.add(sprite);
+		if (newNote.isSustain)
+			holdGroup.add(newNote);
+		else
+			notesGroup.add(newNote);
 	}
 
-	override public function remove(sprite:FlxSprite, splice:Bool = false):FlxSprite
+	public function destroyNote(newNote:Note)
 	{
-		if (Std.isOfType(sprite, Note))
-		{
-			var newNote = cast(sprite, Note);
-			if (newNote.isSustain)
-				holdGroup.remove(newNote);
-			else
-				notesGroup.remove(newNote);
-			allNotes.remove(newNote);
-			newNote.destroy();
-		}
-		return super.remove(sprite, splice);
+		if (newNote.isSustain)
+			holdGroup.remove(newNote);
+		else
+			notesGroup.remove(newNote);
+		allNotes.remove(newNote);
+		newNote.destroy();
 	}
 }
 

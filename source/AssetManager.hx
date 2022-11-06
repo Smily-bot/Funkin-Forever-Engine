@@ -126,7 +126,7 @@ class AssetManager
 				keyedAssets.set(key, Sound.fromFile('./' + key));
 				// trace('new sound $key');
 			}
-			trace('sound returning $key');
+			// trace('sound returning $key');
 			return keyedAssets.get(key);
 		}
 		trace('sound returning null at $key');
@@ -142,7 +142,11 @@ class AssetManager
 	public static function getPath(directory:String, group:String, ?type:AssetType = DIRECTORY):String
 	{
 		var pathBase:String = 'assets/';
-		var directoryExtension:String = '$group/$directory';
+		var directoryExtension:String = '';
+		if (group != null)
+			directoryExtension += '$group/';
+		if (directory != null)
+			directoryExtension += '$directory';
 		return filterExtensions('$pathBase$directoryExtension', type);
 	}
 

@@ -2,6 +2,8 @@ package states.editors;
 
 import base.ChartParser;
 import base.Conductor;
+import base.ScriptHandler;
+import base.debug.HaxeUIOverlay;
 import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxG;
@@ -19,11 +21,15 @@ import flixel.util.FlxColor;
 import flixel.util.FlxGradient;
 import funkin.Note;
 import funkin.Strumline;
+import haxe.ui.RuntimeComponentBuilder;
+import haxe.ui.containers.VBox;
+import haxe.ui.core.Component;
 import openfl.display.BitmapData;
 import openfl.display.BlendMode;
 import openfl.geom.ColorTransform;
 import openfl.geom.Matrix;
 import openfl.geom.Rectangle;
+import sys.io.File;
 import sys.thread.Mutex;
 import sys.thread.Thread;
 
@@ -77,6 +83,12 @@ class ChartEditor extends MusicBeatState
 		generateBackground();
 		reloadSong();
 		generateUI();
+
+		FlxG.mouse.visible = true;
+		FlxG.mouse.useSystemCursor = true;
+
+		var ui:HaxeUIOverlay = new HaxeUIOverlay('chart-editor', 'images/menus/chart');
+		add(ui);
 	}
 
 	public var conductorCrochet:FlxSprite;
@@ -129,7 +141,7 @@ class ChartEditor extends MusicBeatState
 		@:privateAccess
 		checkerboard = new FlxGraphic('board$cellSize',
 			FlxGridOverlay.createGrid(cellSize, cellSize, cellSize * 2, cellSize * 2, true, FlxColor.WHITE, FlxColor.BLACK), true);
-		checkerboard.bitmap.colorTransform(new Rectangle(0, 0, cellSize * 2, cellSize * 2), new ColorTransform(1, 1, 1, 0.15));
+		checkerboard.bitmap.colorTransform(new Rectangle(0, 0, cellSize * 2, cellSize * 2), new ColorTransform(1, 1, 1, 0.20));
 
 		line = FlxG.bitmap.create(cellSize * keyAmount * strumlines, 1, FlxColor.WHITE, true, 'chartline');
 		sectionLine = FlxG.bitmap.create((cellSize * keyAmount * strumlines) + 8, 2, FlxColor.WHITE, true, 'sectionline');
@@ -307,6 +319,7 @@ class ChartEditor extends MusicBeatState
 		else
 			_song = {
 				name: 'test',
+				rawName: 'test',
 				bpm: 100,
 				speed: 1,
 				events: [],
@@ -336,12 +349,6 @@ class ChartEditor extends MusicBeatState
 		uiCornerBar.scrollFactor.set();
 		uiCornerBar.setPosition(4, FlxG.height - (uiCornerBar.height + 4) + 24);
 		uiCornerBar.antialiasing = true;
-
-		// generate stu ff
-		var sliceTextbox:FlxUI9SliceSprite = new FlxUI9SliceSprite(0, 0, AssetManager.getAsset('menus/chart/9slice', IMAGE, 'images'),
-			new flash.geom.Rectangle(0, 0, 100, 100), [0, 0, 48, 48], false, false);
-		sliceTextbox.screenCenter();
-		add(sliceTextbox);
 	}
 
 	public function returnCornerStats():String
@@ -374,6 +381,13 @@ class ChartEditor extends MusicBeatState
 				Conductor.boundSong.play();
 				Conductor.boundVocals.play();
 			}
+		}
+
+		if (FlxG.keys.justPressed.ENTER)
+		{
+			FlxG.mouse.visible = false;
+			FlxG.mouse.useSystemCursor = false;
+			FlxG.switchState(new PlayState());
 		}
 
 		var modifier:Int = (FlxG.keys.pressed.SHIFT ? 2 : 1);

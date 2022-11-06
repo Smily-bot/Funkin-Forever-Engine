@@ -31,6 +31,9 @@ class Main extends Sprite
 		// initialize the forever scripthandler
 		ScriptHandler.initialize();
 
+		// haxeui stuff
+		haxe.ui.Toolkit.init();
+
 		var gameCreate:FlxGame;
 		gameCreate = new FlxGame(1280, 720, Init, 1, defaultFramerate, defaultFramerate, true, false);
 		addChild(gameCreate);

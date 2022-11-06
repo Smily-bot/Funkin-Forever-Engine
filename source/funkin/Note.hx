@@ -22,6 +22,7 @@ class Note extends ForeverSprite
 	public var endHoldOffset:Float = Math.NEGATIVE_INFINITY;
 	//
 	public var noteHealth:Float = 1;
+	public var ignoreNote:Bool = false;
 	public var lowPriority:Bool = false;
 	public var hitboxLength:Float = 1;
 

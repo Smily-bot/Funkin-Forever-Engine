@@ -1,0 +1,79 @@
+var editorColor = 0x402656;
+var altColor = 0xD9A5FF;
+var editorFont = getAsset("fonts/vcr", 'font');
+
+var menu:MenuBar;
+
+function onCreate() {
+    menu = makeMenuObject(MenuBar, null, editorColor);
+    menu.width = FlxG.width;
+
+    generateChartMenu();
+
+    var selectableTabs = makeMenuObject(TabView, null, editorColor);
+    selectableTabs.setPosition(50, 125);
+    selectableTabs.width = 350;
+    selectableTabs.height = 400;
+    selectableTabs.customStyle.opacity = 0.8;
+    
+    var note = makeMenuObject(Box, selectableTabs, altColor);
+    note.text = "Note";
+    note.customStyle.color = altColor;
+    var event = makeMenuObject(Box, selectableTabs, altColor);
+    event.text = "Events";
+    event.customStyle.color = altColor;
+}
+
+function generateChartMenu() {
+    var sep = makeMenuObject(MenuSeparator, menu, editorColor);
+    // file menu
+    var fileMenu = makeMenuObject(Menu, menu, altColor);
+    fileMenu.text = "File";
+ 
+    var newfile = makeMenuObject(MenuItem, fileMenu, altColor);
+    newfile.text = "New Chart";
+    newfile.onClick = function(e){
+        trace('make new chart');
+    };
+    var loadfile = makeMenuObject(MenuItem, fileMenu, altColor);
+    loadfile.text = "Load Chart";
+    loadfile.onClick = function(e){
+        trace('load new chart');
+    };
+    var recentfiles = makeMenuObject(MenuItem, fileMenu, altColor);
+    recentfiles.text = "Recent Charts";
+    recentfiles.expandable = true;
+    var sep = makeMenuObject(MenuSeparator, fileMenu, editorColor);
+    var save = makeMenuObject(MenuItem, fileMenu, altColor);
+    save.text = "Save Chart";
+    var saveas = makeMenuObject(MenuItem, fileMenu, altColor);
+    saveas.text = "Save As";
+    var exportevents = makeMenuObject(MenuItem, fileMenu, altColor);
+    exportevents.text = "Export Events";
+
+    //
+    /*
+    var editMenu = makeMenuObject(Menu, menu, altColor);
+    editMenu.text = "Edit";*/
+    var chartMenu = makeMenuObject(Menu, menu, altColor);
+    chartMenu.text = "Chart";
+    var backupsMenu = makeMenuObject(Menu, menu, altColor);
+    backupsMenu.text = "Backups";
+    var optionsMenu = makeMenuObject(Menu, menu, altColor);
+    optionsMenu.text = "Options";
+    var helpMenu = makeMenuObject(Menu, menu, altColor);
+    helpMenu.text = "Help";
+}
+
+function makeMenuObject(typeOfObject, ?addToObject:Dynamic, ?objectColor = 0xFFFFFF) {
+    var object = new typeOfObject();
+    object.color = objectColor;
+    //
+    object.customStyle.fontName = editorFont;
+    object.customStyle.fontSize = 16;
+    //
+    if (addToObject != null)
+        addToObject.addComponent(object);
+    else add(object);
+    return object;
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<module>
+	<!-- A module provides additional behavior and configuration for HaxeUI. -->
+	<components>
+		<class package="haxe.ui.components" loadAll="true" />
+		<class package="haxe.ui.containers" loadAll="true" />
+        <class package="haxe.ui.containers.menus" loadAll="true" />
+		<class package="haxe.ui.core" loadAll="true" />
+	</components>
+</module>

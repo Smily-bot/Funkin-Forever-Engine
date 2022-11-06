@@ -2,6 +2,7 @@ package base;
 
 import flixel.FlxG;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.math.FlxMath;
 import flixel.system.FlxSound;
 import openfl.media.Sound;
 import states.MusicBeatState.MusicHandler;
@@ -13,7 +14,7 @@ typedef Judgement =
 {
 	var name:String;
 	var timing:Float;
-	var score:Float;
+	var score:Int;
 	var accuracy:Float;
 	var health:Float;
 	var comboStatus:Null<String>;
@@ -169,9 +170,20 @@ class Conductor
 class Timings
 {
 	public static var highestFC:Int;
-	public static var combo:Int = 0;
 
-	public static var threshold:Float = 120;
+	public static var combo:Int = 0;
+	public static var score:Int = 0;
+	public static var health:Float = 1;
+	public static var misses:Int = 0;
+
+	public static var totalNotesHit:Int = 0;
+	public static var notesAccuracy:Float = 0;
+	public static var accuracy(get, never):Float;
+
+	static function get_accuracy():Float
+		return notesAccuracy / totalNotesHit;
+
+	public static var threshold:Float = 200;
 
 	// judgements
 	public static var judgements:Array<Judgement> = [
@@ -188,7 +200,7 @@ class Timings
 			timing: 90,
 			score: 150,
 			health: 50,
-			accuracy: 80,
+			accuracy: 85,
 			comboStatus: 'GFC'
 		},
 		{
@@ -196,7 +208,7 @@ class Timings
 			timing: 125,
 			score: 50,
 			health: 20,
-			accuracy: 100,
+			accuracy: 50,
 			comboStatus: 'FC'
 		},
 		{
@@ -227,4 +239,23 @@ class Timings
 		"E" => 70,
 		"F" => 65
 	];
+
+	public static function resetScore()
+	{
+		combo = 0;
+		score = 0;
+		health = 1;
+		misses = 0;
+
+		//
+		totalNotesHit = 0;
+	}
+
+	public static function returnAccuracy():String
+	{
+		var returnString:String = 'N/A';
+		if (totalNotesHit > 0)
+			returnString = '${Math.floor(accuracy * 100) / 100}%';
+		return returnString;
+	}
 }
