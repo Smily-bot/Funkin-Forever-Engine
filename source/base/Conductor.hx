@@ -176,6 +176,9 @@ class Timings
 	public static var health:Float = 1;
 	public static var misses:Int = 0;
 
+	public static var curRating:String = 'N/A';
+	public static var curCombo:String = null;
+
 	public static var totalNotesHit:Int = 0;
 	public static var notesAccuracy:Float = 0;
 	public static var accuracy(get, never):Float;
@@ -256,6 +259,27 @@ class Timings
 		var returnString:String = 'N/A';
 		if (totalNotesHit > 0)
 			returnString = '${Math.floor(accuracy * 100) / 100}%';
+		updateRanking();
 		return returnString;
+	}
+
+	public static function updateRanking()
+	{
+		//
+		var lastAccuracy:Float = 0;
+		for (rating => accuracyCondition in scoreRating)
+		{
+			if ((accuracyCondition <= accuracy) && (accuracyCondition >= lastAccuracy))
+			{
+				lastAccuracy = accuracy;
+				curRating = rating;
+			}
+		}
+
+		// Update FC Display;
+		if (judgements[highestFC].comboStatus != null)
+			curCombo = judgements[highestFC].comboStatus;
+		else
+			curCombo = (misses < 10 ? 'SDCB' : null);
 	}
 }
