@@ -834,16 +834,17 @@ class PlayState extends MusicBeatState
 	override public function onActionReleased(action:String)
 	{
 		super.onActionReleased(action);
-		if (receptorActionList.contains(action))
-		{
-			// find the right receptor(s) within the controlled strumlines
-			for (strumline in controlledStrumlines)
-			{
-				if (strumline.autoplay)
-					return;
 
-				for (receptor in strumline.receptors)
+		// find the right receptor(s) within the controlled strumlines
+		for (strumline in controlledStrumlines)
+		{
+			for (receptor in strumline.receptors)
+			{
+				if (receptor.getNoteDirection().contains(action))
 				{
+					if (strumline.autoplay)
+						return;
+
 					// if this is the specified action
 					if (action == receptor.action)
 					{
