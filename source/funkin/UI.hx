@@ -72,10 +72,12 @@ class UI extends FlxSpriteGroup
 	public function updateScoreText()
 	{
 		var newText:String = '';
+		var comboDisplay:String = (Timings.curCombo != null ? ' [${Timings.curCombo}]' : '');
+
 		newText += 'Score: ${Timings.score}' + divider;
-		newText += 'Accuracy: ${Timings.returnAccuracy()}' + divider;
+		newText += 'Accuracy: ${Timings.returnAccuracy()}' + comboDisplay + divider;
 		newText += 'Combo Breaks: ${Timings.misses}' + divider;
-		newText += 'Rank: S';
+		newText += 'Rank: ${Timings.curRating}';
 		//
 		newText += '\n';
 		if (scoreBar.text != newText)
