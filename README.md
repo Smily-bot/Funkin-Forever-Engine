@@ -8,9 +8,9 @@ Due to recent events, [Yoshubs / CubicYoshi](https://github.com/Yoshubs)'s githu
 
 in order to preserve her hard work on this project, [I, Gabriela](https://github.com/BeastlyGabi) have archived the files for all versions of Forever Engine I had saved on separate repositories.
 
-This repository contains both [Forever Engine Legacy](https://github.com/BeastlyGabi/Funkin-Forever-Engine/tree/legacy) and the unfinished [Forever Engine 1.0, a full rewrite of FNF **and** Forever as a whole](https://github.com/BeastlyGabi/Funkin-Forever-Engine/tree/rewrite)
-
-the current [master](https://github.com/BeastlyGabi/Funkin-Forever-Engine) branch contains a Hybrid between the two versions, the Rewrite, and Legacy
+* [Legacy](https://github.com/BeastlyGabi/Funkin-Forever-Engine/tree/legacy)
+* [1.0 (UNFINISHED)](https://github.com/BeastlyGabi/Funkin-Forever-Engine/tree/rewrite)
+* [Hybrid](https://github.com/BeastlyGabi/Funkin-Forever-Engine/tree/hybrid)
 
 **thank you for your effort Cubii, and stay safe.**
 
